@@ -11,53 +11,73 @@ import PhotosUI
 
 struct KeypadView: View {
     @StateObject private var kpMgr = KeypadManager.shared
+    @AppStorage("showTips") var showTips = true
     @AppStorage("mpContainerPath") private var mpContainerPath = ""
     let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 3)
     @State private var size: KPSize = KPSize.defSize
+    @State private var showSizeAlert = false
     @State private var custW = 0
     @State private var custH = 0
     @State private var showFileImporter = false
     
     var body: some View {
-        VStack(spacing: 16) {
-            VStack(spacing: 2) {
-                Text("Key Size")
-                Picker("", selection: $size) {
-                    ForEach(KPSize.allCases, id: \.self) { kpSize in
-                        Text(kpSize.label).tag(kpSize)
-                    }
-                }
-                .onChange(of: size) { _, newSize in
-                    if newSize == KPSize.custom {
-                        Alertinator.shared.prompt(title: "What would you like the new width to be?", completion: { res1 in
-                            if let wStr = res1 {
-                                custW = Int(wStr) ?? 0
-                                Alertinator.shared.prompt(title: "What would you like the new height to be?", completion: { res2 in
-                                    if let hStr = res2 {
-                                        custH = Int(hStr) ?? 0
-                                        kpMgr.changeSizeOfKeypads(size: size, custW: custW, custH: custH)
-                                    }
-                                })
-                            }
-                        })
-                    } else {
-                        kpMgr.changeSizeOfKeypads(size: newSize)
-                    }
-                }
-            }
+        VStack {
             LazyVGrid(columns: columns, alignment: .center, spacing: 16) {
                 ForEach($kpMgr.mpKeypad) { $item in
                     KeyItem(size: $size, kpID: item.kpID, imgData: $item.imgData)
                         .environmentObject(kpMgr)
                 }
             }
-            Button {
-                kpMgr.applyKeypadItems()
-            } label: {
-                Image(systemName: "checkmark")
+            .safeAreaInset(edge: .top) {
+                VStack(spacing: 2) {
+                    Text("Key Size")
+                    Picker("", selection: $size) {
+                        ForEach(KPSize.allCases, id: \.self) { kpSize in
+                            Text(kpSize.label + (kpSize == .custom ? " (\(custW)x\(custH))" : "")).tag(kpSize)
+                        }
+                    }
+                    .alert("What would you like the custom size to be?", isPresented: $showSizeAlert) {
+                        TextField("Width", value: $custW, format: .number)
+                            .keyboardType(.numberPad)
+                        TextField("Height", value: $custH, format: .number)
+                            .keyboardType(.numberPad)
+                        Button("Cancel", role: .cancel) {
+                            size = .defSize
+                        }
+                        Button("Set") {
+                            kpMgr.changeSizeOfKeypads(size: size, custW: custW, custH: custH)
+                        }
+                    }
+                    .onChange(of: size) { _, newSize in
+                        if newSize != KPSize.custom {
+                            kpMgr.changeSizeOfKeypads(size: newSize)
+                        } else {
+                            showSizeAlert.toggle()
+                        }
+                    }
+                }
+                .padding(6)
+                .background(Color(.systemBackground), in: .rect(cornerRadius: cornerRad.component))
             }
-            .buttonStyle(KeypadButtonStyle(isConfirm: true))
-            .frame(maxWidth: .infinity, alignment: .center)
+            .safeAreaInset(edge: .bottom) {
+                Button {
+                    let res = kpMgr.applyKeypadItems()
+                    if res {
+                        if showTips {
+                            Alertinator.shared.alert(title: "Successfully applied custom keypads!", body: KPMsg.applyComp)
+                        } else {
+                            Haptic.shared.play(.soft)
+                        }
+                    } else {
+                        Alertinator.shared.alert(title: "Failed to apply custom keypads!", body: AppMsg.opFailed)
+                    }
+                } label: {
+                    Image(systemName: "checkmark")
+                }
+                .buttonStyle(KeypadButtonStyle(isConfirm: true))
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 10)
+            }
         }
         .navigationTitle(isPad() ? "" : "Dialer Themer")
         .frame(maxWidth: 325)
@@ -66,28 +86,36 @@ struct KeypadView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Button {
-                        kpMgr.getCurrentKeypads(size: size, custW: custW, custH: custH, saveOgData: true)
-                    } label: {
-                        Label("Clear Keys", systemImage: "gobackward")
-                    }
-                    Button {
                         kpMgr.maskKeysIntoCircle(size: size, custW: custW, custH: custH)
                     } label: {
                         Label("Mask Keys", systemImage: "circle")
                     }
+                    Button {
+                        size = .defSize
+                        kpMgr.getCurrentKeypads()
+                    } label: {
+                        Label("Get Current Keys", systemImage: "externaldrive")
+                    }
                     Divider()
+                    Button {
+                        size = .defSize
+                        kpMgr.clearKeypads()
+                    } label: {
+                        Label("Clear Keys", systemImage: "xmark")
+                    }
                     Button(role: .destructive) {
                         Alertinator.shared.alert(title: "Are you sure you'd like to reset your set keys?", body: KPMsg.resetWarn, actionLabel: "Confirm", action: {
                             let res = kpMgr.resetKeypadItems()
                             if res {
                                 kpMgr.mpKeypad = emptyKeypadArray
+                                kpMgr.getCurrentKeypads()
                                 Alertinator.shared.alert(title: "Successfully reset dialer keys!", body: KPMsg.applyComp)
                             } else {
                                 Alertinator.shared.alert(title: "Failed to reset dialer keys!", body: AppMsg.opFailed)
                             }
                         })
                     } label: {
-                        Label("Reset Keys", systemImage: "xmark")
+                        Label("Reset Keys", systemImage: "trash")
                     }
                 } label: {
                     Label("Menu", systemImage: "ellipsis")
@@ -120,15 +148,13 @@ struct KeypadView: View {
         @Binding var size: KPSize
         @State var kpID: KeypadID
         @Binding var imgData: Data
-        @State private var didFinish = false
-        @State private var image: UIImage?
         @State private var showPicker = false
         
         var body: some View {
             Button {
                 showPicker = true
             } label: {
-                if let img = image {
+                if let img = UIImage(data: imgData) {
                     let denoVal: Float = isPad() ? 2.1 : 3.0
                     Image(uiImage: img)
                         .resizable()
@@ -150,32 +176,17 @@ struct KeypadView: View {
             }
             .frame(width: 80, height: 80)
             .sheet(isPresented: $showPicker) {
-                ImagePickerView(image: $image, updateView: $didFinish)
-            }
-            .onChange(of: didFinish) {
-                // need a delay unless you want a lovely race condition
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let img = image {
-                        guard let data = img.pngData() else { return }
-                        let imgData = {
-                            switch size {
-                            case .defSize: return kpMgr.resizeAndRet(withData: data, isDefault: true)
-                            case .custom: return kpMgr.resizeAndRet(withData: data, customSize: CGSize(width: Int(img.size.width), height: Int(img.size.height)))
-                            default: return kpMgr.resizeAndRet(withData: data, newSize: size.float)
-                            }
-                        }()
-                        kpMgr.updateKeypadItem(forID: kpID, withData: imgData, ogData: imgData)
-                    }
-                }
-            }
-            .onAppear {
-                if let img = UIImage(data: imgData) {
-                    image = img
-                }
-            }
-            .onChange(of: imgData) {
-                if let img = UIImage(data: imgData) {
-                    image = img
+                ImagePickerView() { data in
+                    imgData = data
+                    guard let img = UIImage(data: imgData) else { return }
+                    let imgData = {
+                        switch size {
+                        case .defSize: return kpMgr.resizeAndRet(withData: imgData, isDefault: true)
+                        case .custom: return kpMgr.resizeAndRet(withData: imgData, customSize: CGSize(width: Int(img.size.width), height: Int(img.size.height)))
+                        default: return kpMgr.resizeAndRet(withData: imgData, newSize: size.float)
+                        }
+                    }()
+                    kpMgr.updateKeypadItem(forID: kpID, withData: imgData, ogData: imgData)
                 }
             }
         }

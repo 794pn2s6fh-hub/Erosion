@@ -23,7 +23,7 @@ enum PBMsg {
 struct PosterBoardView: View {
     @AppStorage("pbContainerPath") private var pbContainerPath = ""
     @AppStorage("tendiesArray") private var tendiesArray: [TendiesObject] = []
-    @AppStorage("showTips") private var showTips = true
+    @AppStorage("showTips") var showTips = true
     @AppStorage("hasShownFirstRunMsg") private var hasShownFirstRunMsg = false
     
     @State private var showImporter = false

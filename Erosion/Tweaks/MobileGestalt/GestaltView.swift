@@ -16,7 +16,7 @@ struct GestaltView: View {
     @AppStorage("mgWriteAtomically") private var mgWriteAtomically = true
     @AppStorage("mgAutoRespring") private var mgAutoRespring = false
     @AppStorage("hasShownSheet") private var hasShownSheet = false
-    @AppStorage("showTips") private var showTips = true
+    @AppStorage("showTips") var showTips = true
     @Environment(\.dismiss) private var dismiss
     
     @State private var mgSubtype = 0

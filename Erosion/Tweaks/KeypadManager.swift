@@ -127,7 +127,8 @@ final class KeypadManager: ObservableObject {
         }
     }
     
-    func applyKeypadItems() {
+    func applyKeypadItems() -> Bool {
+        var failed = 0
         for item in mpKeypad {
             let files = item.kpID.fileNames
             for fileName in files {
@@ -136,9 +137,14 @@ final class KeypadManager: ObservableObject {
                     try item.imgData.write(to: finalURL)
                 } catch {
                     print("[!] failed to write image data: \(error)")
+                    failed += 1
                 }
             }
         }
+        if failed == 0 {
+            return true
+        }
+        return false
     }
     
     func resetKeypadItems() -> Bool {
@@ -148,12 +154,21 @@ final class KeypadManager: ObservableObject {
             for fileURL in files {
                 try fm.removeItem(at: fileURL)
             }
-            getCurrentKeypads(size: .large, saveOgData: true)
+            clearKeypads()
             return true
         } catch {
             print("[!] failed to reset keypad items: \(error)")
         }
         return false
+    }
+    
+    func clearKeypads() {
+        for keypad in mpKeypad {
+            if let index = mpKeypad.firstIndex(where: { $0.id == keypad.id }) {
+                mpKeypad[index].ogImgData = Data()
+                mpKeypad[index].imgData = Data()
+            }
+        }
     }
     
     func resizeAndRet(withData data: Data, newSize: CGFloat = CGFloat(0), customSize: CGSize? = nil, shallCircle: Bool = false, isDefault: Bool = false) -> Data {

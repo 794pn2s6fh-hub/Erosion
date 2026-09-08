@@ -7,8 +7,7 @@ import SwiftUI
 import PhotosUI
 
 struct ImagePickerView: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
-    @Binding var updateView: Bool
+    var completion: ((Data) -> Void)? = nil
 
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var config = PHPickerConfiguration()
@@ -18,9 +17,7 @@ struct ImagePickerView: UIViewControllerRepresentable {
         return picker
     }
 
-    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {
-
-    }
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -40,9 +37,13 @@ struct ImagePickerView: UIViewControllerRepresentable {
 
             if provider.canLoadObject(ofClass: UIImage.self) {
                 provider.loadObject(ofClass: UIImage.self) { image, _ in
-                    self.parent.image = image as? UIImage
+                    let uiImage = image as? UIImage
+                    let resultData = uiImage?.pngData() ?? Data()
+
+                    DispatchQueue.main.async {
+                        self.parent.completion?(resultData)
+                    }
                 }
-                self.parent.updateView.toggle()
             }
         }
     }
