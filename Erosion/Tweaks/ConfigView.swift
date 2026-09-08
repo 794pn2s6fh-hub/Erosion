@@ -20,7 +20,7 @@ enum CNMsg {
 
 struct ConfigView: View {
     @EnvironmentObject private var mgr: ErosionManager
-    @AppStorage("showTips") private var showTips = true
+    @AppStorage("showTips") var showTips = true
     @State private var ftCurrentDict = NSMutableDictionary()
     @State private var ccCurrentDict = NSMutableDictionary()
     @State private var footnoteText = ""

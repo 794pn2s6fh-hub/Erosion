@@ -59,7 +59,7 @@ struct ErosionApp: App {
                         }
                     }
                     print("")
-                    print("[*] Erosion v0.1 (\(build))")
+                    print("[*] Erosion v\(AppInfo.appVersion) (\(build))")
                     print("[*] Running on \(UIDevice.current.systemName) \(UIDevice.current.systemVersion), \(machineName())")
                     if !isSupported() && !weOnADebugBuild {
                         Alertinator.shared.alert(title: "Your \(device.systemName) version is not supported!", body: AppMsg.unsupported, showCancel: false, actionLabel: "Exit", action: { exitinator() })

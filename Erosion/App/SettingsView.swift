@@ -10,7 +10,7 @@ import PartyUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
-    @AppStorage("showTips") private var showTips = true
+    @AppStorage("showTips") var showTips = true
     
     var body: some View {
         NavigationStack {
