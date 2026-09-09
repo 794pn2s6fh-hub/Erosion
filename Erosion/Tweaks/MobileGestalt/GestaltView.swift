@@ -26,6 +26,8 @@ struct GestaltView: View {
     @AppStorage("mgDeviceName") private var mgDeviceName = ""
     @AppStorage("ogMachineName") private var ogMachineName = ""
     @AppStorage("showRegionTweak") private var showRegionTweak = false
+    @AppStorage("showCustomKeys") private var showCustomKeys = false
+    @AppStorage("mgCustKeyArray") var customKeys: [MGCustomKey] = []
     @State private var mgProductType = ""
     
     @State private var showInfoSheet = false
@@ -217,6 +219,13 @@ struct GestaltView: View {
                         
                         Divider()
                         
+                        if showCustomKeys {
+                            NavigationLink(destination: CustomKeyView()) {
+                                Label("Custom Keys", systemImage: "pencil")
+                            }
+                        }
+                        
+                        // tweak-specific settings
                         NavigationLink {
                             List {
                                 Section {
@@ -238,6 +247,7 @@ struct GestaltView: View {
                                 
                                 Section {
                                     PlainToggle(text: "Show Hidden Tweaks", infoType: .warning, infoMessage: MGMsg.hidTweakWarn, isOn: $mgOverrideGates)
+                                    Toggle("Show Custom Keys", isOn: $showCustomKeys)
                                     Toggle("Respring after Apply", isOn: $mgAutoRespring)
                                     Toggle("Overwrite Atomically", isOn: $mgWriteAtomically)
                                 } footer: {
@@ -367,6 +377,13 @@ struct GestaltView: View {
                     artwork["ArtworkDeviceProductDescription"] = mgDeviceName
                 }
                 cacheExtra[MGKey.prodType] = mgProductType
+                for item in customKeys {
+                    if item.isOn {
+                        cacheExtra[item.key] = true
+                    } else {
+                        cacheExtra.removeObject(forKey: item.key)
+                    }
+                }
             } else {
                 throw "failed to write keys to mobilegestalt!"
             }
