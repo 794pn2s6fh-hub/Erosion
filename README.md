@@ -19,11 +19,12 @@
 ### Supported Versions
 >[!NOTE]
 >If your version doesn't show up on this list, your device is not supported. **Do not ask us for any support regarding extending version support!** Exploits that apps like these rely on are very rare to come by, so there's nothing we can do if your device isn't supported.
-- iOS 26.0 - iOS 26.6.2 **(limited functionality, e.g. no gestalt tweaks)**
-- iOS 27.0 (24A5355q) -> Developer Beta 1
-- iOS 27.0 (24A5370h) -> Developer Beta 2
-- iOS 27.0 (24A5380h) -> Developer Beta 3/Public Beta 1
-- iOS 27.0 (24A5390f) -> Developer Beta 4/Public Beta 2
+- iOS/iPadOS 26.0 - 26.6.2 **(limited functionality, e.g. no gestalt tweaks)**
+- iOS/iPadOS 27.0 (24A5355q) -> Developer Beta 1
+- iOS/iPadOS 27.0 (24A5370h) -> Developer Beta 2
+- iOS/iPadOS 27.0 (24A5380h) -> Developer Beta 3/Public Beta 1
+- iPadOS 27.0 (24A5380l) -> Revised DB3
+- iOS/iPadOS 27.0 (24A5390f) -> Developer Beta 4/Public Beta 2
 
 All iOS 26 versions cannot use some of the tweaks that this toolbox contains. The section below tells you what tweaks work on what versions.
 
