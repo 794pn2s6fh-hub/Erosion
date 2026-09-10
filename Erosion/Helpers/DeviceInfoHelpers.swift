@@ -9,17 +9,18 @@ import Foundation
 import PartyUI
 import UIKit
 
-// version support for different functions
+// rave is the internal codename for ios 27
 func raveSupported() -> Bool {
     let buildNum = buildNumber()
-    if doubleSystemVersion() == 27.0 && (buildNum == "24A5355q" || buildNum == "24A5370h" || buildNum == "24A5380h" || buildNum == "24A5390f") {
+    if buildNum == "24A5355q" || buildNum == "24A5370h" || buildNum == "24A5380h" || buildNum == "24A5390f" {
         return true
     }
     return false
 }
 
+let vrs = ProcessInfo.processInfo.operatingSystemVersion
 func isSupported() -> Bool {
-    if (doubleSystemVersion() >= 19.0 && doubleSystemVersion() < 27.0) || raveSupported() {
+    if (vrs.majorVersion == 26 && vrs.minorVersion < 7) || raveSupported() {
         return true
     }
     return false

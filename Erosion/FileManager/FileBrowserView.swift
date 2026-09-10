@@ -208,7 +208,7 @@ struct FileBrowserView: View {
                                 }
                                 Toggle("Hide Dates", isOn: $hideDates)
                             } header: {
-                                HeaderLabel(text: "View Options", icon: "eyes")
+                                HeaderLabel(text: "View Options", icon: "eye")
                             }
                             
                             Section {

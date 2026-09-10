@@ -16,6 +16,14 @@ struct SettingsView: View {
         NavigationStack {
             List {
                 Section {
+                    Toggle("Show Tooltips", isOn: $showTips)
+                } header: {
+                    HeaderLabel(text: "View Options", icon: "eye")
+                } footer: {
+                    Text("With tooltips turned off, you will not get prompts that tell you how to use certain parts of the app.")
+                }
+                
+                Section {
                     AppInfoCell(build: build)
                     NavigationLink("Credits") {
                         List {
@@ -27,14 +35,6 @@ struct SettingsView: View {
                     }
                 } footer: {
                     Text("Made with love by the [jailbreak.party](https://jailbreak.party) team.\nJoin the [jailbreak.party](https://jailbreak.party/discord) Discord!")
-                }
-                
-                Section {
-                    Toggle("Show Tooltips", isOn: $showTips)
-                } header: {
-                    HeaderLabel(text: "View Options", icon: "eyes")
-                } footer: {
-                    Text("With tooltips turned off, you will not get prompts that tell you how to use certain parts of the app.")
                 }
             }
             .navigationTitle("Settings")
