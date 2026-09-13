@@ -20,7 +20,6 @@ enum CNMsg {
 
 struct ConfigView: View {
     @EnvironmentObject private var mgr: ErosionManager
-    @AppStorage("showTips") var showTips = true
     @AppStorage("autoRespring") var autoRespring = false
     @State private var ftCurrentDict = NSMutableDictionary()
     @State private var ccCurrentDict = NSMutableDictionary()
@@ -79,20 +78,16 @@ struct ConfigView: View {
                         TextField("Organization Name", text: $orgName)
                     }
                 } header: {
-                    HeaderLabel( "Supervision", symbol: "eye")
+                    HeaderLabel("Supervision", symbol: "eye")
                 }
             }
             .navigationTitle("Configurations")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        if showTips {
-                            Alertinator.shared.alert(title: "Are you sure you'd like to reset your tweaks?", body: CNMsg.resetInfo, actionLabel: "Confirm", action: {
-                                reset()
-                            })
-                        } else {
+                        Alertinator.shared.alert(title: "Are you sure you'd like to reset your tweaks?", body: CNMsg.resetInfo, actionLabel: "Confirm", action: {
                             reset()
-                        }
+                        })
                     } label: {
                         Label("Restore Tweaks", systemImage: "gobackward")
                             .labelStyle(.iconOnly)
@@ -155,9 +150,7 @@ struct ConfigView: View {
             print("(cn) successfully applied config tweaks!")
             Haptic.shared.play(.soft)
             if autoRespring { mgr.shouldRespring = true }
-            if showTips {
-                Alertinator.shared.alert(title: "Successfully appiled config tweaks!", body: AppMsg.applied, actionLabel: "Respring", action: { mgr.shouldRespring = true })
-            }
+            Alertinator.shared.alert(title: "Successfully appiled config tweaks!", body: AppMsg.applied, actionLabel: "Respring", action: { mgr.shouldRespring = true })
         } catch {
             print("(cn) failed to write config files: \(error)")
             Alertinator.shared.alert(title: "Failed to apply tweaks!", body: AppMsg.opFailed)
@@ -175,9 +168,7 @@ struct ConfigView: View {
             Haptic.shared.play(.soft)
             loadData()
             footnoteText = ""
-            if showTips {
-                Alertinator.shared.alert(title: "Successfully reset config tweaks!", body: AppMsg.applied, actionLabel: "Respring", action: { mgr.shouldRespring = true })
-            }
+            Alertinator.shared.alert(title: "Successfully reset config tweaks!", body: AppMsg.applied, actionLabel: "Respring", action: { mgr.shouldRespring = true })
         } catch {
             print("(cn) failed to reset config files: \(error)")
             Alertinator.shared.alert(title: "Failed to reset tweaks!", body: AppMsg.opFailed)

@@ -224,7 +224,7 @@ struct FileBrowserView: View {
                                 HeaderLabel("Text Viewer", symbol: "doc.plaintext")
                             }
                         }
-                        .navigationTitle("FM Settings")
+                        .navigationTitle("File Browser Settings")
                     } label: {
                         Label("Settings", systemImage: "gearshape")
                     }

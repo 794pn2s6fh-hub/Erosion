@@ -37,7 +37,7 @@ struct InfoViewer: View {
                     StringInfoCell(file.modifiedDateStr, label: "Last Modified")
                     BoolInfoCell(file.type == .symlink, label: "Symlink")
                 } header: {
-                    HeaderLabel( "File", symbol: "doc")
+                    HeaderLabel("File", symbol: "doc")
                 }
                 
                 Section {
@@ -48,7 +48,7 @@ struct InfoViewer: View {
                     BoolInfoCell(file.writable, label: "Writable")
                     BoolInfoCell(file.executable, label: "Executable")
                 } header: {
-                    HeaderLabel( "Permissions", symbol: "shield")
+                    HeaderLabel("Permissions", symbol: "shield")
                 }
             }
             .navigationTitle("\(file.type.rawValue.capitalized) Info")

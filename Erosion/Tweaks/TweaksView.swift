@@ -16,7 +16,7 @@ struct TweaksView: View {
                     NavigationLink("Custom Wallpapers", destination: PosterBoardView())
                     NavigationLink("Dialer Themer", destination: KeypadView())
                 } header: {
-                    HeaderLabel( "Theming", symbol: "paintbrush")
+                    HeaderLabel("Theming", symbol: "paintbrush")
                 }
                 
                 Section {
@@ -26,7 +26,7 @@ struct TweaksView: View {
                     }
                     NavigationLink("File Operations", destination: OperationsView())
                 } header: {
-                    HeaderLabel( "System", symbol: "gear")
+                    HeaderLabel("System", symbol: "gear")
                 }
             }
             .navigationTitle("Tweaks")

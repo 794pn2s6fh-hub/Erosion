@@ -23,7 +23,6 @@ enum PBMsg {
 struct PosterBoardView: View {
     @AppStorage("pbContainerPath") private var pbContainerPath = ""
     @AppStorage("tendiesArray") private var tendiesArray: [TendiesObject] = []
-    @AppStorage("showTips") var showTips = true
     @AppStorage("hasShownFirstRunMsg") private var hasShownFirstRunMsg = false
     
     @State private var showImporter = false
@@ -158,7 +157,7 @@ struct PosterBoardView: View {
                             Section {
                                 TextField("PosterBoard Path", text: $pbContainerPath, axis: .vertical)
                             } header: {
-                                HeaderLabel( "PosterBoard", symbol: "photo")
+                                HeaderLabel("PosterBoard", symbol: "photo")
                             }
                             
                             Section {
@@ -188,7 +187,7 @@ struct PosterBoardView: View {
                                     }
                                 }
                             } header: {
-                                HeaderLabel( "Data", symbol: "loupe")
+                                HeaderLabel("Data", symbol: "loupe")
                             } footer: {
                                 Text("If you're having trouble applying custom wallpapers, try resetting any of the three extensions listed.")
                             }
@@ -209,9 +208,10 @@ struct PosterBoardView: View {
                             hasShownFirstRunMsg = true
                             proceed()
                         })
-                    } else if tendiesArray.filter({ $0.isOn }).flatMap({ $0.descrNames }).count > 5 && showTips {
+                    } else if tendiesArray.filter({ $0.isOn }).flatMap({ $0.descrNames }).count > 5 {
                         Alertinator.shared.alert(title: "Before you begin...", body: PBMsg.limitWarning, actionLabel: "Confirm", action: {
-                            proceed() })
+                            proceed()
+                        })
                     } else {
                         proceed()
                     }
@@ -223,11 +223,7 @@ struct PosterBoardView: View {
                             Alertinator.shared.alert(title: "Failed to apply wallpapers!", body: PBMsg.corruption)
                         } else {
                             Haptic.shared.play(.soft)
-                            if showTips {
-                                Alertinator.shared.alert(title: "Restart PosterBoard to finish applying!", body: PBMsg.finishApply, showCancel: false, actionLabel: "Continue", action: { openApp(withBID: SysBID.poster) })
-                            } else {
-                                openApp(withBID: SysBID.poster)
-                            }
+                            Alertinator.shared.alert(title: "Restart PosterBoard to finish applying!", body: PBMsg.finishApply, showCancel: false, actionLabel: "Continue", action: { openApp(withBID: SysBID.poster) })
                         }
                     }
                 }

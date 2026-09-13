@@ -37,7 +37,7 @@ struct CustomKeyView: View {
                     }
                 }
             } header: {
-                HeaderLabel( "Add Keys", symbol: "plus")
+                HeaderLabel("Add Keys", symbol: "plus")
             }
             
             Section {

@@ -57,7 +57,7 @@ struct OperationsView: View {
                     }
                 }
             } header: {
-                HeaderLabel( "Target", symbol: "dot.scope")
+                HeaderLabel("Target", symbol: "dot.scope")
             }
             
             Section {
@@ -113,7 +113,7 @@ struct OperationsView: View {
                 }
                 .disabled(imprtData.isEmpty)
             } header: {
-                HeaderLabel( "Operations", symbol: "wrench.and.screwdriver")
+                HeaderLabel("Operations", symbol: "wrench.and.screwdriver")
             }
         }
         .navigationTitle("File Operations")

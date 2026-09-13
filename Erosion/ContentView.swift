@@ -20,9 +20,7 @@ struct ContentView: View {
                     LogView()
                         .modifier(TerminalPlatter())
                 } header: {
-                    HeaderLabel( "Version \(AppInfo.appVersion) (\(build))", symbol: "info.circle")
-                } footer: {
-                    Text("Made with love by the [jailbreak.party](https://jailbreak.party/) team. Thanks to forcequitOS for the [bad_query](https://github.com/forcequitOS/bad_query) sandbox escape that this app relies on.")
+                    HeaderLabel("Logs", symbol: "apple.terminal")
                 }
                 
                 Section {
@@ -30,7 +28,7 @@ struct ContentView: View {
                         mgr.shouldRespring = true
                     }
                 } header: {
-                    HeaderLabel( "Actions", symbol: "gearshape")
+                    HeaderLabel("Actions", symbol: "gearshape")
                 }
             }
             .navigationTitle("Erosion")

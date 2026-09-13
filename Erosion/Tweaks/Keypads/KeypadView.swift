@@ -11,7 +11,6 @@ import PhotosUI
 
 struct KeypadView: View {
     @StateObject private var kpMgr = KeypadManager.shared
-    @AppStorage("showTips") var showTips = true
     @AppStorage("mpContainerPath") private var mpContainerPath = ""
     let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 3)
     @State private var size: KPSize = KPSize.defSize
@@ -63,13 +62,10 @@ struct KeypadView: View {
                 Button {
                     let res = kpMgr.applyKeypadItems()
                     if res {
-                        if showTips {
-                            Alertinator.shared.alert(title: "Successfully applied custom keypads!", body: KPMsg.applyComp, actionLabel: "Open Phone", action: {
-                                openApp(withBID: SysBID.phone)
-                            })
-                        } else {
-                            Haptic.shared.play(.soft)
-                        }
+                        Alertinator.shared.alert(title: "Successfully applied custom keypads!", body: KPMsg.applyComp, actionLabel: "Open Phone", action: {
+                            openApp(withBID: SysBID.phone)
+                        })
+                        Haptic.shared.play(.soft)
                     } else {
                         Alertinator.shared.alert(title: "Failed to apply custom keypads!", body: AppMsg.opFailed)
                     }
@@ -188,9 +184,9 @@ struct KeypadView: View {
                     guard let img = UIImage(data: imgData) else { return }
                     let imgData = {
                         switch size {
-                        case .defSize: return kpMgr.resizeAndRet(withData: imgData, isDefault: true)
-                        case .custom: return kpMgr.resizeAndRet(withData: imgData, customSize: CGSize(width: Int(img.size.width), height: Int(img.size.height)))
-                        default: return kpMgr.resizeAndRet(withData: imgData, newSize: size.float)
+                        case .defSize: return kpMgr.resizeAndRet(withData: data, isDefault: true)
+                        case .custom: return kpMgr.resizeAndRet(withData: data, customSize: CGSize(width: Int(img.size.width), height: Int(img.size.height)))
+                        default: return kpMgr.resizeAndRet(withData: data, newSize: size.float)
                         }
                     }()
                     kpMgr.updateKeypadItem(forID: kpID, withData: imgData, ogData: imgData)

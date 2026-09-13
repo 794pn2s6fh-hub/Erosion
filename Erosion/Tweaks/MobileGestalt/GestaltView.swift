@@ -16,7 +16,6 @@ struct GestaltView: View {
     @AppStorage("mgWriteAtomically") private var mgWriteAtomically = true
     @AppStorage("autoRespring") var autoRespring = false
     @AppStorage("hasShownSheet") private var hasShownSheet = false
-    @AppStorage("showTips") var showTips = true
     @Environment(\.dismiss) private var dismiss
     
     @State private var mgSubtype = 0
@@ -71,7 +70,7 @@ struct GestaltView: View {
                         TextField("Device Name", text: $mgDeviceName)
                     }
                 } header: {
-                    HeaderLabel( "Artwork", symbol: "paintbrush.pointed")
+                    HeaderLabel("Artwork", symbol: "paintbrush.pointed")
                 }
                 
                 if !isDynamIslandHD() || !isAODHD() || !isBootChimeHD() || !isChargeLimitHD() || mgOverrideGates {
@@ -82,14 +81,14 @@ struct GestaltView: View {
                         if !isAODHD() || mgOverrideGates {
                             PlainToggle("Enable AOD", minVrs: 18.0, isOn: store.mgKeyBinding([MGKey.AOD, MGKey.AOTime]))
                             if store.isEnabled([MGKey.AOD]) {
-                                PlainToggle( "Enable AOD Vibrancy", minVrs: 18.0, isOn: store.mgKeyBinding([MGKey.AODVibrancy]))
+                                PlainToggle("Enable AOD Vibrancy", minVrs: 18.0, isOn: store.mgKeyBinding([MGKey.AODVibrancy]))
                             }
                         }
                         if !isBootChimeHD() || mgOverrideGates {
-                            PlainToggle( "Enable Charge Limit", minVrs: 17.0, isOn: store.mgKeyBinding([MGKey.chargeLim]))
+                            PlainToggle("Enable Charge Limit", minVrs: 17.0, isOn: store.mgKeyBinding([MGKey.chargeLim]))
                         }
                         if !isChargeLimitHD() || mgOverrideGates {
-                            PlainToggle( "Enable Boot Chime", isOn: store.mgKeyBinding([MGKey.bootChime]))
+                            PlainToggle("Enable Boot Chime", isOn: store.mgKeyBinding([MGKey.bootChime]))
                         }
                     } header: {
                         HeaderLabel("Hardware Features", symbol: "gearshape")
@@ -97,20 +96,20 @@ struct GestaltView: View {
                 }
                 
                 Section {
-                    PlainToggle( "Enable Internal Install", infoType: .info, infoMessage: MGMsg.intInstall, isOn: store.mgKeyBinding([MGKey.intInstall]))
-                    PlainToggle( "Enable Internal Build", infoType: .info, infoMessage: MGMsg.intBuild, isOn: store.mgKeyBinding([MGKey.intBuild]))
+                    PlainToggle("Enable Internal Install", infoType: .info, infoMessage: MGMsg.intInstall, isOn: store.mgKeyBinding([MGKey.intInstall]))
+                    PlainToggle("Enable Internal Build", infoType: .info, infoMessage: MGMsg.intBuild, isOn: store.mgKeyBinding([MGKey.intBuild]))
                 } header: {
-                    HeaderLabel( "Internal", symbol: "ant")
+                    HeaderLabel("Internal", symbol: "ant")
                 }
                 .disabled(store.isEnabled([MGKey.appIntell]))
                 
                 Section {
                     PlainToggle( "Enable SRD UI", minVrs: 26.0, isOn: store.mgKeyBinding([MGKey.srd]))
                     if showRegionTweak {
-                        PlainToggle( "Disable Region Restrictions", isOn: store.mgRegionRestrictionsBinding())
+                        PlainToggle("Disable Region Restrictions", isOn: store.mgRegionRestrictionsBinding())
                     }
                     if !isAppleIntellHD() || mgOverrideGates {
-                        PlainToggle( "Enable Apple Intelligence", minVrs: 18.1, isOn: store.mgKeyBinding([MGKey.appIntell]))
+                        PlainToggle("Enable Apple Intelligence", minVrs: 18.1, isOn: store.mgKeyBinding([MGKey.appIntell]))
                             .onChange(of: store.mgKeyBinding([MGKey.appIntell]).wrappedValue) { (oldVal, newVal) in
                                 if newVal {
                                     store.mgPullKeys([MGKey.intBuild, MGKey.intInstall])
@@ -158,22 +157,22 @@ struct GestaltView: View {
                 
                 Section {
                     if !isCrashDectHD() || mgOverrideGates {
-                        PlainToggle( "Crash Detection", isOn: store.mgKeyBinding([MGKey.crashDet]))
+                        PlainToggle("Crash Detection", isOn: store.mgKeyBinding([MGKey.crashDet]))
                     }
                     if !isPWMHD() || mgOverrideGates {
-                        PlainToggle( "Pulse Width Modulation", minVrs: 19.0, isOn: store.mgKeyBinding([MGKey.pwm]))
+                        PlainToggle("Pulse Width Modulation", minVrs: 19.0, isOn: store.mgKeyBinding([MGKey.pwm]))
                     }
                     if ogMachineName.contains("iPhone") || mgOverrideGates {
-                        PlainToggle( "Apple Pencil", isOn: store.mgKeyBinding([MGKey.appPencil]))
+                        PlainToggle("Apple Pencil", isOn: store.mgKeyBinding([MGKey.appPencil]))
                     }
                     if !isCamControlHD() || mgOverrideGates {
-                        PlainToggle( "Camera Control", minVrs: 18.0, isOn: store.mgKeyBinding([MGKey.camButton, MGKey.grapPefr]))
+                        PlainToggle("Camera Control", minVrs: 18.0, isOn: store.mgKeyBinding([MGKey.camButton, MGKey.grapPefr]))
                     }
                     if !isActionButtonHD() || mgOverrideGates {
-                        PlainToggle( "Action Button", minVrs: 17.0, isOn: store.mgKeyBinding([MGKey.actButton]))
+                        PlainToggle("Action Button", minVrs: 17.0, isOn: store.mgKeyBinding([MGKey.actButton]))
                     }
                     if isHomeButtonHD() || mgOverrideGates {
-                        PlainToggle( "Tap to Wake", isOn: store.mgKeyBinding([MGKey.tapToWake]))
+                        PlainToggle("Tap to Wake", isOn: store.mgKeyBinding([MGKey.tapToWake]))
                     }
                 } header: {
                     HeaderLabel("Preference Bundles", symbol: "gear")
@@ -181,13 +180,13 @@ struct GestaltView: View {
                 
                 Section {
                     if machineName().contains("iPad") || mgOverrideGates {
-                        PlainToggle( "Enable Stage Manager", isOn: store.mgKeyBinding([MGKey.stageMgr]))
+                        PlainToggle("Enable Stage Manager", isOn: store.mgKeyBinding([MGKey.stageMgr]))
                     }
                     if store.strVal(forKey: MGKey.deviceClass) == "iPhone" || mgOverrideGates {
-                        PlainToggle( "Enable iPadOS UI", infoType: .warning, infoMessage: MGMsg.ipadOS, isOn: store.mgTrollPadBinding())
+                        PlainToggle("Enable iPadOS UI", infoType: .warning, infoMessage: MGMsg.ipadOS, isOn: store.mgTrollPadBinding())
                     }
                 } header: {
-                    HeaderLabel( "iPadOS", symbol: "ipad")
+                    HeaderLabel("iPadOS", symbol: "ipad")
                 }
             }
             .navigationTitle("MobileGestalt")
@@ -242,11 +241,11 @@ struct GestaltView: View {
                                         })
                                     }
                                 } header: {
-                                    HeaderLabel( "Data", symbol: "loupe")
+                                    HeaderLabel("Data", symbol: "loupe")
                                 }
                                 
                                 Section {
-                                    PlainToggle( "Show Hidden Tweaks", infoType: .warning, infoMessage: MGMsg.hidTweakWarn, isOn: $mgOverrideGates)
+                                    PlainToggle("Show Hidden Tweaks", infoType: .warning, infoMessage: MGMsg.hidTweakWarn, isOn: $mgOverrideGates)
                                     Toggle("Show Custom Keys", isOn: $showCustomKeys)
                                     Toggle("Overwrite Atomically", isOn: $mgWriteAtomically)
                                 } footer: {
@@ -396,9 +395,7 @@ struct GestaltView: View {
                 if autoRespring || isFromSheet {
                     mgr.shouldRespring = true
                 } else {
-                    if showTips {
-                        Alertinator.shared.alert(title: "Successfully appiled MobileGestalt tweaks!", body: AppMsg.applied + (store.isEnabled([MGKey.appIntell]) ? " You'll have to reboot your device if you want to use Apple Intelligence." : ""), actionLabel: "Respring", action: { mgr.shouldRespring = true })
-                    }
+                    Alertinator.shared.alert(title: "Successfully appiled MobileGestalt tweaks!", body: AppMsg.applied + (store.isEnabled([MGKey.appIntell]) ? "You'll have to reboot your device if you want to use Apple Intelligence." : ""), actionLabel: "Respring", action: { mgr.shouldRespring = true })
                 }
             } else {
                 throw "overwrite failed!"
@@ -424,9 +421,7 @@ struct GestaltView: View {
                 if let dict = NSMutableDictionary(contentsOf: MGURL.savedGestaltURL) {
                     store.mgCurrentDict = dict
                 }
-                if showTips {
-                    Alertinator.shared.alert(title: "Successfully reverted MobileGestalt tweaks!", body: MGMsg.revertComp)
-                }
+                Alertinator.shared.alert(title: "Successfully reverted MobileGestalt tweaks!", body: MGMsg.revertComp)
             } else {
                 throw "overwrite failed!"
             }
